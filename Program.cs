@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace AlgoritmosBusqueda
@@ -29,7 +29,7 @@ namespace AlgoritmosBusqueda
             Console.WriteLine("-------------------------------------------------------------------------");
             Console.WriteLine("1. EJECUCIÓN: Búsqueda Lineal O(n)");
             Console.WriteLine("-------------------------------------------------------------------------");
-            Estudiante resultadoLineal = BuscadorMatriculas.BusquedaLineal(listaEstudiantes, matriculaObjetivo, out int iteracionesLineal);
+            Estudiante? resultadoLineal = BuscadorMatriculas.BusquedaLineal(listaEstudiantes, matriculaObjetivo, out int iteracionesLineal);
             
             if (resultadoLineal != null)
             {
@@ -45,7 +45,7 @@ namespace AlgoritmosBusqueda
             Console.WriteLine("\n-------------------------------------------------------------------------");
             Console.WriteLine("2. EJECUCIÓN: Búsqueda Binaria O(log n)");
             Console.WriteLine("-------------------------------------------------------------------------");
-            Estudiante resultadoBinario = BuscadorMatriculas.BusquedaBinaria(listaEstudiantes, matriculaObjetivo, out int iteracionesBinaria);
+            Estudiante? resultadoBinario = BuscadorMatriculas.BusquedaBinaria(listaEstudiantes, matriculaObjetivo, out int iteracionesBinaria);
             
             if (resultadoBinario != null)
             {
@@ -65,9 +65,6 @@ namespace AlgoritmosBusqueda
             Console.WriteLine($"* Iteraciones Búsqueda Binaria: {iteracionesBinaria}");
             Console.WriteLine($"* Reducción de operaciones    : {((double)(iteracionesLineal - iteracionesBinaria) / iteracionesLineal * 100):F2}%");
             Console.WriteLine("=========================================================================");
-            
-            Console.WriteLine("\nPresione cualquier tecla para salir...");
-            Console.ReadKey();
         }
     }
 }
