@@ -1,0 +1,15 @@
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.AssemblyInfoInputs.cache
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.AssemblyInfo.cs
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.csproj.CoreCompileInputs.cache
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.sourcelink.json
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\bin\Debug\net8.0\EstructuraDeDatos_2026.exe
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\bin\Debug\net8.0\EstructuraDeDatos_2026.deps.json
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\bin\Debug\net8.0\EstructuraDeDatos_2026.runtimeconfig.json
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\bin\Debug\net8.0\EstructuraDeDatos_2026.dll
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\bin\Debug\net8.0\EstructuraDeDatos_2026.pdb
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.dll
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\refint\EstructuraDeDatos_2026.dll
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.pdb
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\EstructuraDeDatos_2026.genruntimeconfig.cache
+C:\Users\jordi\OneDrive\Documentos\Unitec\Tareas Unitec\6to cuatrimestre\Estructura de Datos\EstructuraDeDatos_2026\obj\Debug\net8.0\ref\EstructuraDeDatos_2026.dll
