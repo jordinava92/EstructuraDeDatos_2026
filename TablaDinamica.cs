@@ -1,34 +1,39 @@
 using System;
-using System.Collections.Generic;
 
 namespace DataCore.Fase3
 {
-    /// <summary>
-    /// Estructura de datos lineal dinámica (Lista Simply Enlazada) integrada al motor DataCore.
-    /// </summary>
     public class TablaDinamica
     {
         private NodoRegistro? cabeza;
-        private int contador;
+        private int contadorRegistros;
 
         public TablaDinamica()
         {
             cabeza = null;
-            contador = 0;
+            contadorRegistros = 0;
         }
 
-        /// <summary>
-        /// Obtiene el número actual de elementos en la lista.
-        /// </summary>
-        public int Cantidad => contador;
+        public int Cantidad => contadorRegistros;
 
-        /// <summary>
-        /// Inserta un nuevo registro al final de la lista.
-        /// Operación de complejidad O(1) si se mantiene puntero al cola, o O(n) recorriendo desde cabeza.
-        /// </summary>
-        public void Insertar(RegistroDatos dato)
+        // Inserción al inicio O(1)
+        public void InsertarInicio(RegistroDatos nuevoRegistro)
         {
-            NodoRegistro nuevoNodo = new NodoRegistro(dato);
+            if (nuevoRegistro == null) 
+                throw new ArgumentNullException(nameof(nuevoRegistro));
+
+            NodoRegistro nuevoNodo = new NodoRegistro(nuevoRegistro);
+            nuevoNodo.Siguiente = cabeza;
+            cabeza = nuevoNodo;
+            contadorRegistros++;
+        }
+
+        // Inserción al final O(n)
+        public void InsertarFinal(RegistroDatos nuevoRegistro)
+        {
+            if (nuevoRegistro == null) 
+                throw new ArgumentNullException(nameof(nuevoRegistro));
+
+            NodoRegistro nuevoNodo = new NodoRegistro(nuevoRegistro);
 
             if (cabeza == null)
             {
@@ -44,69 +49,45 @@ namespace DataCore.Fase3
                 actual.Siguiente = nuevoNodo;
             }
 
-            contador++;
+            contadorRegistros++;
         }
 
-        /// <summary>
-        /// Busca un registro por su ID.
-        /// Complejidad O(n) en el peor caso.
-        /// </summary>
-        public RegistroDatos? BuscarPorId(int id)
-        {
-            NodoRegistro? actual = cabeza;
-
-            while (actual != null)
-            {
-                if (actual.Dato != null && actual.Dato.Id == id)
-                {
-                    return actual.Dato;
-                }
-                actual = actual.Siguiente;
-            }
-
-            return null; // No encontrado
-        }
-
-        /// <summary>
-        /// Elimina la primera ocurrencia de un registro coincidente con el ID dado.
-        /// Controla adecuadamente el redireccionamiento de punteros y casos borde.
-        /// </summary>
-        public bool Eliminar(int id)
+        // Eliminación por ID O(n)
+        public bool EliminarPorId(int idTarget)
         {
             if (cabeza == null) return false;
 
-            // Caso borde 1: Eliminar el primer nodo (cabeza)
-            if (cabeza.Dato != null && cabeza.Dato.Id == id)
+            // Caso especial: eliminar la cabeza
+            if (cabeza.Dato != null && cabeza.Dato.Id == idTarget)
             {
-                cabeza = cabeza.Siguiente; // El Garbage Collector se encargará del nodo desreferenciado
-                contador--;
+                cabeza = cabeza.Siguiente;
+                contadorRegistros--;
                 return true;
             }
 
-            // Caso general: Recorrer buscando el elemento previo al que se va a eliminar
-            NodoRegistro actual = cabeza;
-            while (actual.Siguiente != null)
+            // Recorrido en tándem (anterior y actual)
+            NodoRegistro anterior = cabeza;
+            NodoRegistro? actual = cabeza.Siguiente;
+
+            while (actual != null)
             {
-                if (actual.Siguiente.Dato != null && actual.Siguiente.Dato.Id == id)
+                if (actual.Dato != null && actual.Dato.Id == idTarget)
                 {
-                    // Redireccionar el puntero Siguiente del nodo anterior al nodo posterior
-                    actual.Siguiente = actual.Siguiente.Siguiente;
-                    contador--;
+                    anterior.Siguiente = actual.Siguiente;
+                    contadorRegistros--;
                     return true;
                 }
+                anterior = actual;
                 actual = actual.Siguiente;
             }
 
-            return false; // No se encontró el nodo a eliminar
+            return false;
         }
 
-        /// <summary>
-        /// Convierte la lista simplemente enlazada a un arreglo estático de tipo RegistroDatos[].
-        /// Necesario para la interoperabilidad con los algoritmos de ordenamiento (QuickSort / SelectionSort).
-        /// </summary>
-        public RegistroDatos[] AArreglo()
+        // Conversión a Arreglo O(n)
+        public RegistroDatos[] ObtenerComoArreglo()
         {
-            RegistroDatos[] arreglo = new RegistroDatos[contador];
+            RegistroDatos[] resultado = new RegistroDatos[contadorRegistros];
             NodoRegistro? actual = cabeza;
             int i = 0;
 
@@ -114,27 +95,25 @@ namespace DataCore.Fase3
             {
                 if (actual.Dato != null)
                 {
-                    arreglo[i] = actual.Dato;
+                    resultado[i] = actual.Dato;
                     i++;
                 }
                 actual = actual.Siguiente;
             }
 
-            return arreglo;
+            return resultado;
         }
 
-        /// <summary>
-        /// Reconstruye la lista a partir de un arreglo estático (útil tras realizar un ordenamiento).
-        /// </summary>
-        public void CargarDesdeArreglo(RegistroDatos[] arreglo)
+        public RegistroDatos? BuscarPorId(int id)
         {
-            cabeza = null;
-            contador = 0;
-
-            foreach (var registro in arreglo)
+            NodoRegistro? actual = cabeza;
+            while (actual != null)
             {
-                Insertar(registro);
+                if (actual.Dato != null && actual.Dato.Id == id)
+                    return actual.Dato;
+                actual = actual.Siguiente;
             }
+            return null;
         }
     }
 }
