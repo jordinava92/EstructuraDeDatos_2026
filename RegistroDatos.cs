@@ -3,7 +3,8 @@ using System;
 namespace DataCoreEngine
 {
     /// <summary>
-    /// Struct inmutable que representa la unidad fundamental de datos almacenada en el Stack/Heap.
+    /// Struct inmutable que representa la unidad fundamental de datos.
+    /// Reside en el Stack del hilo de ejecución.
     /// </summary>
     public readonly struct RegistroDatos
     {
@@ -20,7 +21,7 @@ namespace DataCoreEngine
 
             if (string.IsNullOrWhiteSpace(nombre))
             {
-                throw new ArgumentNullException(nameof(nombre), "El nombre no puede ser vacío o nulo.");
+                throw new ArgumentNullException(nameof(nombre), "El nombre no puede ser vacío.");
             }
 
             Id = id;
@@ -30,7 +31,7 @@ namespace DataCoreEngine
 
         public override string ToString()
         {
-            return $"[ID: {Id,-5} | Nombre: {Nombre,-15} | Valor: {Valor,8:F2}]";
+            return $"ID: {Id,-6} | Nombre: {Nombre,-15} | Valor: {Valor,8:F2}";
         }
     }
 }

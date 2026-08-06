@@ -5,10 +5,8 @@ using System.Collections.Generic;
 namespace DataCoreEngine
 {
     /// <summary>
-    /// Lista simplemente enlazada genérica residente en el Heap administrado por el GC.
-    /// Restringida a tipos de valor (struct) para garantizar cero boxing/unboxing.
+    /// Lista simplemente enlazada genérica residente en el Heap.
     /// </summary>
-    /// <typeparam name="T">Tipo de dato almacenado (debe ser struct).</typeparam>
     public class TablaDinamica<T> : IEnumerable<T> where T : struct
     {
         private class Nodo<TDato>
@@ -34,9 +32,7 @@ namespace DataCoreEngine
             _count = 0;
         }
 
-        /// <summary>
-        /// Inserción en cabeza — Complejidad O(1)
-        /// </summary>
+        // Inserción en cabeza — O(1)
         public void Agregar(T dato)
         {
             var nuevoNodo = new Nodo<T>(dato)
@@ -47,9 +43,7 @@ namespace DataCoreEngine
             _count++;
         }
 
-        /// <summary>
-        /// Eliminación por predicado — Complejidad O(n)
-        /// </summary>
+        // Eliminación por predicado — O(n)
         public bool Eliminar(Func<T, bool> predicado)
         {
             if (_cabeza == null) return false;
@@ -76,9 +70,7 @@ namespace DataCoreEngine
             return false;
         }
 
-        /// <summary>
-        /// Materialización a arreglo denso — Complejidad O(n)
-        /// </summary>
+        // Materialización a arreglo denso — O(n)
         public T[] ToArray()
         {
             T[] resultado = new T[_count];

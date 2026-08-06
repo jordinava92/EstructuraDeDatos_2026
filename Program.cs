@@ -6,47 +6,43 @@ namespace DataCoreEngine
     class Program
     {
         private static TablaDinamica<RegistroDatos> _tabla = new TablaDinamica<RegistroDatos>();
-        private static RegistroDatos[]? _arregloCache = null;
-        private static bool _estaOrdenado = false;
+        private static RegistroDatos[]? _arregloDenso = null;
+        private static bool _arregloOrdenado = false;
 
         static void Main(string[] args)
+        {
+            EjecutarMenu();
+        }
+
+        private static void EjecutarMenu()
         {
             int opcion = -1;
             do
             {
-                MostrarMenuCLI();
+                MostrarMenu();
                 string? entrada = Console.ReadLine();
                 try
                 {
-                    if (!int.TryParse(entrada, out opcion))
-                    {
-                        throw new FormatException("La entrada ingresada no es numérica.");
-                    }
+                    opcion = int.Parse(entrada ?? "");
 
                     if (opcion < 0 || opcion > 6)
                     {
                         throw new ArgumentOutOfRangeException(nameof(opcion), "Opción fuera de rango [0-6].");
                     }
 
-                    EjecutarOpcion(opcion);
+                    DespacharOpcion(opcion);
                 }
-                catch (FormatException ex)
+                catch (FormatException)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\n[ERROR] {ex.Message} Ingrese un número entre 0 y 6.");
-                    Console.ResetColor();
+                    Console.WriteLine("\n[ERROR] Entrada no numérica. Ingrese un número entre 0 y 6.");
                 }
                 catch (ArgumentOutOfRangeException ex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"\n[ERROR] {ex.Message}");
-                    Console.ResetColor();
                 }
                 catch (Exception ex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\n[ERROR INESPERADO] {ex.Message}");
-                    Console.ResetColor();
+                    Console.WriteLine($"\n[ERROR] {ex.Message}");
                 }
 
                 if (opcion != 0)
@@ -57,29 +53,27 @@ namespace DataCoreEngine
 
             } while (opcion != 0);
 
-            Console.WriteLine("\nSaliendo del sistema DataCore Engine v4.0...");
+            Console.WriteLine("\nSaliendo del sistema...");
         }
 
-        private static void MostrarMenuCLI()
+        private static void MostrarMenu()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("=================================================");
-            Console.WriteLine("           DataCore Engine v4.0 - Menú CLI       ");
-            Console.WriteLine("=================================================");
-            Console.ResetColor();
-            Console.WriteLine(" | [1] Insertar nuevo registro                 |");
-            Console.WriteLine(" | [2] Mostrar todos los registros             |");
-            Console.WriteLine(" | [3] Ordenar con SelectionSort               |");
-            Console.WriteLine(" | [4] Ordenar con QuickSort                   |");
-            Console.WriteLine(" | [5] Búsqueda binaria por ID                 |");
-            Console.WriteLine(" | [6] Eliminar registro por ID                |");
-            Console.WriteLine(" | [0] Salir del sistema                       |");
-            Console.WriteLine("=================================================");
-            Console.Write("Ingrese una opción: ");
+            Console.WriteLine("|===========================================|");
+            Console.WriteLine("|       DataCore Engine v4.0 — Menú CLI     |");
+            Console.WriteLine("|===========================================|");
+            Console.WriteLine("| [1] Insertar nuevo registro               |");
+            Console.WriteLine("| [2] Mostrar todos los registros           |");
+            Console.WriteLine("| [3] Ordenar con SelectionSort             |");
+            Console.WriteLine("| [4] Ordenar con QuickSort                 |");
+            Console.WriteLine("| [5] Búsqueda binaria por ID               |");
+            Console.WriteLine("| [6] Eliminar registro por ID              |");
+            Console.WriteLine("| [0] Salir del sistema                     |");
+            Console.WriteLine("|===========================================|");
+            Console.Write("Ingresa una opción: ");
         }
 
-        private static void EjecutarOpcion(int opcion)
+        private static void DespacharOpcion(int opcion)
         {
             switch (opcion)
             {
@@ -90,10 +84,10 @@ namespace DataCoreEngine
                     MostrarRegistros();
                     break;
                 case 3:
-                    EjecutarOrdenamiento(usarQuickSort: false);
+                    OrdenarSelectionSort();
                     break;
                 case 4:
-                    EjecutarOrdenamiento(usarQuickSort: true);
+                    OrdenarQuickSort();
                     break;
                 case 5:
                     EjecutarBusquedaBinaria();
@@ -107,71 +101,75 @@ namespace DataCoreEngine
         private static void InsertarRegistro()
         {
             Console.WriteLine("\n--- Insertar Nuevo Registro ---");
-            Console.Write("Ingrese ID (entero > 0): ");
+            Console.Write("Ingrese ID: ");
             int id = int.Parse(Console.ReadLine() ?? "0");
 
             Console.Write("Ingrese Nombre: ");
             string nombre = Console.ReadLine() ?? "";
 
-            Console.Write("Ingrese Valor (decimal): ");
+            Console.Write("Ingrese Valor: ");
             double valor = double.Parse(Console.ReadLine() ?? "0");
 
             RegistroDatos nuevo = new RegistroDatos(id, nombre, valor);
             _tabla.Agregar(nuevo);
 
-            _estaOrdenado = false; // Invalida el caché
-            _arregloCache = null;
+            // Al modificar la lista, el arreglo denso previo queda desactualizado
+            _arregloOrdenado = false;
+            _arregloDenso = null;
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[OK] Registro agregado exitosamente en cabeza O(1).");
-            Console.ResetColor();
+            Console.WriteLine("[OK] Registro insertado en la lista.");
         }
 
         private static void MostrarRegistros()
         {
-            Console.WriteLine("\n--- Registros en Tabla Dinámica (Heap) ---");
+            Console.WriteLine("\n--- Registros Almacenados ---");
             if (_tabla.Count == 0)
             {
-                Console.WriteLine("La tabla está vacía.");
+                Console.WriteLine("No hay registros.");
                 return;
             }
 
-            foreach (var reg in _tabla)
+            foreach (var item in _tabla)
             {
-                Console.WriteLine(reg);
+                Console.WriteLine(item);
             }
-            Console.WriteLine($"Total de registros: {_tabla.Count}");
+            Console.WriteLine($"Total: {_tabla.Count} registros.");
         }
 
-        private static void EjecutarOrdenamiento(bool usarQuickSort)
+        private static void OrdenarSelectionSort()
         {
             if (_tabla.Count == 0)
             {
-                Console.WriteLine("\nNo hay datos para ordenar.");
+                Console.WriteLine("\nLa colección está vacía.");
                 return;
             }
 
-            _arregloCache = _tabla.ToArray();
+            _arregloDenso = _tabla.ToArray();
             Stopwatch sw = Stopwatch.StartNew();
+            AlgoritmosOrdenamiento.SelectionSort(_arregloDenso);
+            sw.Stop();
 
-            if (usarQuickSort)
+            _arregloOrdenado = true;
+            Console.WriteLine($"\n[INFO] SelectionSort ejecutado en {sw.ElapsedMilliseconds} ms ({sw.Elapsed.TotalMicroseconds:F2} µs).");
+            Console.WriteLine("[OK] Arreglo denso ordenado.");
+        }
+
+        private static void OrdenarQuickSort()
+        {
+            if (_tabla.Count == 0)
             {
-                AlgoritmosOrdenamiento.QuickSort(_arregloCache, 0, _arregloCache.Length - 1);
-                sw.Stop();
-                Console.WriteLine($"\n[INFO] Ejecutando QuickSort O(n log n)...");
-            }
-            else
-            {
-                AlgoritmosOrdenamiento.SelectionSort(_arregloCache);
-                sw.Stop();
-                Console.WriteLine($"\n[INFO] Ejecutando SelectionSort O(n²)...");
+                Console.WriteLine("\nLa colección está vacía.");
+                return;
             }
 
-            _estaOrdenado = true;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[OK] Arreglo denso materializado y ordenado con éxito.");
-            Console.WriteLine($"Tiempo transcurrido: {sw.ElapsedMilliseconds} ms ({sw.Elapsed.TotalMicroseconds:F2} µs)");
-            Console.ResetColor();
+            _arregloDenso = _tabla.ToArray();
+            Stopwatch sw = Stopwatch.StartNew();
+            AlgoritmosOrdenamiento.QuickSort(_arregloDenso, 0, _arregloDenso.Length - 1);
+            sw.Stop();
+
+            _arregloOrdenado = true;
+            Console.WriteLine($"\n[INFO] QuickSort ejecutado en {sw.ElapsedMilliseconds} ms ({sw.Elapsed.TotalMicroseconds:F2} µs).");
+            Console.WriteLine("[OK] Arreglo denso ordenado.");
         }
 
         private static void EjecutarBusquedaBinaria()
@@ -182,34 +180,32 @@ namespace DataCoreEngine
                 return;
             }
 
-            if (!_estaOrdenado || _arregloCache == null)
+            // Validación estricta según requerimiento de la Memoria Técnica
+            if (!_arregloOrdenado || _arregloDenso == null)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("\n[AVISO] La colección no estaba ordenada. Ejecutando QuickSort automático...");
-                Console.ResetColor();
-                _arregloCache = _tabla.ToArray();
-                AlgoritmosOrdenamiento.QuickSort(_arregloCache, 0, _arregloCache.Length - 1);
-                _estaOrdenado = true;
+                Console.WriteLine("\n[INFO] Convirtiendo lista a arreglo denso...");
+                _arregloDenso = _tabla.ToArray();
+                Console.WriteLine("[INFO] Ejecutando Búsqueda Binaria...");
+                Console.WriteLine("[INFO] Ordenando internamente con QuickSort...");
+                AlgoritmosOrdenamiento.QuickSort(_arregloDenso, 0, _arregloDenso.Length - 1);
+                _arregloOrdenado = true;
             }
 
-            Console.Write("\nIngrese el ID a buscar: ");
+            Console.Write("\nIngresa el ID a buscar: ");
             int idBuscado = int.Parse(Console.ReadLine() ?? "0");
 
-            int idx = Busqueda.BusquedaBinaria(_arregloCache, idBuscado, out int comparaciones);
+            int idx = Busqueda.BusquedaBinaria(_arregloDenso, idBuscado);
 
             if (idx != -1)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\n[OK] Registro encontrado en el índice {idx} (Arreglo Denso):");
-                Console.WriteLine($"    {_arregloCache[idx]}");
-                Console.WriteLine($"[INFO] Búsqueda completada en {comparaciones} comparaciones.");
-                Console.ResetColor();
+                Console.WriteLine($"\n[OK] Registro encontrado en índice {idx}");
+                Console.WriteLine($"     Id     : { _arregloDenso[idx].Id}");
+                Console.WriteLine($"     Nombre : { _arregloDenso[idx].Nombre}");
+                Console.WriteLine($"     Valor  : { _arregloDenso[idx].Valor}");
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\n[FAIL] Registro con ID {idBuscado} no encontrado tras {comparaciones} comparaciones.");
-                Console.ResetColor();
+                Console.WriteLine($"\n[FAIL] No se encontró el registro con ID {idBuscado}.");
             }
         }
 
@@ -217,28 +213,24 @@ namespace DataCoreEngine
         {
             if (_tabla.Count == 0)
             {
-                Console.WriteLine("\nLa tabla está vacía.");
+                Console.WriteLine("\nLa colección está vacía.");
                 return;
             }
 
-            Console.Write("\nIngrese el ID a eliminar: ");
+            Console.Write("\nIngresa el ID a eliminar: ");
             int id = int.Parse(Console.ReadLine() ?? "0");
 
             bool eliminado = _tabla.Eliminar(r => r.Id == id);
 
             if (eliminado)
             {
-                _estaOrdenado = false;
-                _arregloCache = null;
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"\n[OK] Registro con ID {id} eliminado de la lista enlazada.");
-                Console.ResetColor();
+                _arregloOrdenado = false;
+                _arregloDenso = null;
+                Console.WriteLine($"\n[OK] Registro con ID {id} eliminado.");
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\n[FAIL] No se encontró ningún registro con ID {id}.");
-                Console.ResetColor();
+                Console.WriteLine($"\n[FAIL] No se encontró el ID {id}.");
             }
         }
     }

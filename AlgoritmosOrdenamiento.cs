@@ -1,13 +1,8 @@
-using System;
-
 namespace DataCoreEngine
 {
     public static class AlgoritmosOrdenamiento
     {
-        /// <summary>
-        /// SelectionSort — Complejidad O(n²) determinística.
-        /// Ordena un arreglo de RegistroDatos in-place por Id.
-        /// </summary>
+        // SelectionSort — O(n²)
         public static void SelectionSort(RegistroDatos[] datos)
         {
             int n = datos.Length;
@@ -31,9 +26,7 @@ namespace DataCoreEngine
             }
         }
 
-        /// <summary>
-        /// QuickSort con estrategia de Pivote Central — Complejidad Promedio O(n log n).
-        /// </summary>
+        // QuickSort — O(n log n) con pivote central
         public static void QuickSort(RegistroDatos[] datos, int izq, int der)
         {
             if (izq >= der) return;
