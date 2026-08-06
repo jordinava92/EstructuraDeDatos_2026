@@ -3,73 +3,72 @@ using System;
 namespace DataCore.Fase4
 {
     /// <summary>
-    /// Proporciona métodos para realizar búsquedas indexadas sobre la estructura de datos dinámica.
+    /// Proporciona algoritmos de búsqueda sobre arreglos de datos indexados.
     /// </summary>
-    public class BusquedaIndexada
+    public static class BusquedaIndexada
     {
         /// <summary>
-        /// Realiza una búsqueda binaria O(log n) sobre un índice auxiliar ordenado.
+        /// Realiza una búsqueda binaria O(log n) sobre un arreglo previamente ordenado ascendente por ID.
         /// </summary>
-        /// <param name="tabla">La instancia de la tabla dinámica con los datos.</param>
-        /// <param name="idTarget">El ID del registro a buscar.</param>
-        /// <param name="comparaciones">Parámetro de salida con el número de comparaciones ejecutadas.</param>
-        /// <returns>El registro encontrado o null si no existe.</returns>
-        public static Fase3.RegistroDatos? BuscarRegistroIndexado(Fase3.TablaDinamica tabla, int idTarget, out int comparaciones)
+        /// <param name="arrOrdenado">Arreglo de RegistroDatos ordenado por ID de menor a mayor.</param>
+        /// <param name="idBuscado">El ID del registro a buscar (debe ser un ID válido).</param>
+        /// <returns>Una tupla conteniendo el registro encontrado (o null) y el total de comparaciones realizadas.</returns>
+        public static (RegistroDatos? registro, int comparaciones) BuscarRegistroIndexado(RegistroDatos[]? arrOrdenado, int idBuscado)
         {
-            comparaciones = 0;
-
-            // 1. Extraer los datos a un arreglo temporal auxiliar
-            Fase3.RegistroDatos[] arregloAuxiliar = tabla.ObtenerComoArreglo();
-
-            if (arregloAuxiliar.Length == 0)
-                return null;
-
-            // 2. Garantizar que el arreglo esté ordenado por ID (QuickSort O(n log n))
-            Array.Sort(arregloAuxiliar, (a, b) => a.Id.CompareTo(b.Id));
-
-            // 3. Algoritmo de Búsqueda Binaria Clásica O(log n)
-            int izquierda = 0;
-            int derecha = arregloAuxiliar.Length - 1;
-
-            while (izquierda <= derecha)
+            // Precondición 2: Arreglo no nulo y sin elementos (Caso borde n = 0)
+            if (arrOrdenado == null || arrOrdenado.Length == 0)
             {
-                int medio = izquierda + (derecha - izquierda) / 2;
+                return (null, 0);
+            }
+
+            int izq = 0;
+            int der = arrOrdenado.Length - 1;
+            int comparaciones = 0;
+
+            while (izq <= der)
+            {
+                // Prevención de overflow de entero para colecciones grandes
+                int medio = izq + (der - izq) / 2;
                 comparaciones++;
 
-                if (arregloAuxiliar[medio].Id == idTarget)
+                if (arrOrdenado[medio].Id == idBuscado)
                 {
-                    return arregloAuxiliar[medio];
+                    return (arrOrdenado[medio], comparaciones);
                 }
-
-                if (arregloAuxiliar[medio].Id < idTarget)
+                else if (arrOrdenado[medio].Id < idBuscado)
                 {
-                    izquierda = medio + 1;
+                    izq = medio + 1;
                 }
                 else
                 {
-                    derecha = medio - 1;
+                    der = medio - 1;
                 }
             }
 
-            return null; // No encontrado
+            return (null, comparaciones);
         }
 
         /// <summary>
-        /// Búsqueda secuencial lineal O(n) para fines comparativos de rendimiento.
+        /// Búsqueda lineal O(n) sobre arreglo para fines comparativos de rendimiento.
         /// </summary>
-        public static Fase3.RegistroDatos? BuscarRegistroLineal(Fase3.TablaDinamica tabla, int idTarget, out int comparaciones)
+        public static (RegistroDatos? registro, int comparaciones) BuscarRegistroLineal(RegistroDatos[]? arreglo, int idBuscado)
         {
-            comparaciones = 0;
-            Fase3.RegistroDatos[] arregloAuxiliar = tabla.ObtenerComoArreglo();
-
-            foreach (var reg in arregloAuxiliar)
+            if (arreglo == null || arreglo.Length == 0)
             {
-                comparaciones++;
-                if (reg.Id == idTarget)
-                    return reg;
+                return (null, 0);
             }
 
-            return null;
+            int comparaciones = 0;
+            for (int i = 0; i < arreglo.Length; i++)
+            {
+                comparaciones++;
+                if (arreglo[i].Id == idBuscado)
+                {
+                    return (arreglo[i], comparaciones);
+                }
+            }
+
+            return (null, comparaciones);
         }
     }
 }
